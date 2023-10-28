@@ -1,7 +1,5 @@
 # StudyOnCurtainWall
-This is a personal program of Micro Service in Tongji , SE School.
-
-
+This is a project on CurtainWall Study cooperated with CE&SE.
 
 ### Backend : Python + Django
 
