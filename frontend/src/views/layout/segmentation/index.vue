@@ -22,7 +22,7 @@
     </el-upload> -->
     <!-- 上传图片end -->
     <div class="upload-container">
-        <ImgUpload ref="ImgUploadRef" @uploadPicture ="upload"/>
+        <ImgUploader ref="ImgUploadRef" @uploadPicture ="upload"/>
     </div>
 
 </template>
@@ -32,7 +32,8 @@ import { ref }from 'vue'
 import axios from 'axios'
 import router from "@/router/index.js"
 import Message from "@/utils/Message.js"
-import ImgUpload from '@/views/layout/segmentation/ImgUpload.vue'
+import ImgUploader from '@/views/layout/segmentation/ImgUploader.vue'
+import { UploadImg } from '@/api/segmentation.js'
 
 // const fileList = ref();
 const ImgUploadRef = ref(null); //上传的图片
@@ -50,6 +51,22 @@ const GoToDash = () => {
 const upload = (val) =>{
     console.log(val.fileList[0])
     console.log(val.fileList[0].raw) //图片raw文件
+    
+    const formData = new FormData();
+    formData.append('image', val.fileList[0].raw);
+
+    let params = {
+        picture:formData,
+    };
+
+    UploadImg(params)
+        .then(function (result) {  // result 是 api /user/login 的返回值，在后端 api 定义
+            // 接收返回值，放在 person_info 变量中
+            console.log(result)
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
 }
 
 // const beforeUpload = (file) => {

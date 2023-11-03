@@ -7,7 +7,6 @@
         ref="uploadRef"
         :class="uploadClass"
         action="' '"  
-        :headers="token"
         list-type="picture-card"
         :auto-upload="false"
         :on-remove="handleRemove"
@@ -43,7 +42,6 @@
 import { ref, computed, reactive } from 'vue'
 import { ElMessage, ElUpload, ElIcon, ElButton,ElDialog, ElRow  } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import { defineEmits } from 'vue'
 
 const emit = defineEmits(['uploadPicture','onCancel']);//定义传值给父组件的方法
 
