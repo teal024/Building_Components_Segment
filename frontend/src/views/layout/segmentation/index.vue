@@ -54,12 +54,7 @@ const upload = (val) =>{
     
     const formData = new FormData();
     formData.append('image', val.fileList[0].raw);
-
-    let params = {
-        picture:formData,
-    };
-
-    UploadImg(params)
+    UploadImg(formData)
         .then(function (result) {  // result 是 api /user/login 的返回值，在后端 api 定义
             // 接收返回值，放在 person_info 变量中
             console.log(result)
