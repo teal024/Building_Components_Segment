@@ -6,7 +6,7 @@
       <el-upload 
         ref="uploadRef"
         :class="uploadClass"
-        action="' '"  
+        action="''"  
         list-type="picture-card"
         :auto-upload="false"
         :on-remove="handleRemove"
