@@ -6,8 +6,12 @@ import router from "@/router/index.js"
 export function UploadImg(params) {  // 在 src/views/login/index.vue 里调用，可以去看看是如何调用的
     return Request({  // 发送请求
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/form-data', // 设置请求头
+          },
         url: '/segmentation/saveimage/',  // 与后端接口对应！！！
-        params: params
+        data: params, // 使用FormData作为请求体
+
     }).then(function (response) {  // then 表示成功接收到响应后的操作
         if (response.data.code === 200) {
             Message.success("分割成功");

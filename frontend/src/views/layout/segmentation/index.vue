@@ -49,11 +49,11 @@ const GoToDash = () => {
 }
 
 const upload = (val) =>{
-    console.log(val.fileList[0])
     console.log(val.fileList[0].raw) //图片raw文件
     
-    const formData = new FormData();
+    let formData = new FormData();
     formData.append('image', val.fileList[0].raw);
+    console.log(formData)
     UploadImg(formData)
         .then(function (result) {  // result 是 api /user/login 的返回值，在后端 api 定义
             // 接收返回值，放在 person_info 变量中
