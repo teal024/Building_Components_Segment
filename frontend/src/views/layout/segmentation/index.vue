@@ -24,6 +24,11 @@
     <div class="upload-container">
         <ImgUploader ref="ImgUploadRef" @uploadPicture ="upload"/>
     </div>
+    <el-scrollbar class="scrollbar-container">
+        <div v-if = "ImgResult">
+            {{ ImgResult }}
+        </div>
+    </el-scrollbar>
 
 </template>
 
@@ -37,6 +42,7 @@ import { UploadImg } from '@/api/segmentation.js'
 
 // const fileList = ref();
 const ImgUploadRef = ref(null); //上传的图片
+const ImgResult = ref(null); //分割后获得的图片
 
 const GoToDash = () => {
     //跳转仪表盘页面
@@ -58,6 +64,7 @@ const upload = (val) =>{
         .then(function (result) {  // result 是 api /user/login 的返回值，在后端 api 定义
             // 接收返回值，放在 person_info 变量中
             console.log(result)
+            after_upload(result);
         })
         .catch(function (error) {
             console.log(error);
@@ -79,12 +86,26 @@ const upload = (val) =>{
 //     Message.warning("文件已移除");
 // }
 
+const after_upload = (result) => {
+    ImgResult.value = result;//后期需要修改，先这么写
+}
 </script>
 
 <style scoped>
-
     .upload-container{
-        margin-top:20px;
+        position:absolute;
+        top:30%;
+        left:5%;
+    }
+    .scrollbar-container{
+        position:absolute;
+        top:13%;
+        left:28%;
+        max-height:80%;
+        width:68%;
+        text-align: left;
+        border: 1px solid black;
+        border-radius: 1%;
     }
 
 </style>
