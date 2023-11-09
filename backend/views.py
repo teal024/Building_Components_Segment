@@ -22,27 +22,46 @@ from backend.segment_anything import sam_model_registry, SamAutomaticMaskGenerat
 class GetImg(GenericViewSet):
     serializer_class = ImageSerializer
 
-    @action(methods=['get'], detail=False)
-    def layer(self):
-        print('get something')
-
-
     @action(methods=['post'], detail=False)
     def save_image(self, request):
-        try:
-            uploaded_file = request.FILES['image']  # 获取上传的图像文件
+        file_path = './backend/media/' # 指定保存文件的文件夹路径
+        # 若文件夹不存在则新建
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
 
-            # 读取上传的图像文件并转换为numpy数组
-            image_data = cv2.imdecode(np.fromstring(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
+        if request.POST.get('func')  == 'A':
 
-            # 调用图像分割函数进行处理
-            segment_image(image_data)
-            return Response({'message': 'Image processing complete.'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            print(e)
-            # 处理异常情况
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            file_path = os.path.join(file_path,'segmentaion')
+            try:
+                uploaded_file = request.FILES['image']  # 获取上传的图像文件
+                FileSystemStorage(location=file_path)
 
+                # 开始图像分割的操作————————————————————————————
+                # 以下代码由严文昊小组填充修改———————————————————
+
+                # 读取上传的图像文件并转换为numpy数组
+                image_data = cv2.imdecode(np.fromstring(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
+
+                # 调用图像分割函数进行处理
+                segment_image(image_data)
+                return Response({'message': 'Image processing complete.'}, status=status.HTTP_200_OK)
+            except Exception as e:
+                print(e)
+                # 处理异常情况
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        elif request.POST.get('func')  == 'B':
+            file_path = os.path.join(file_path,'explosion_identify')
+            fs = FileSystemStorage(location=file_path)
+            try:
+                uploaded_file = request.FILES['image']  # 获取上传的图像文件
+                filename = fs.save(uploaded_file.name, uploaded_file)
+
+                 # 开始识别玻璃内爆的操作—————————————————————————
+                 # 以下代码由邓丁熙小组填充修改———————————————————
+
+                return Response({'message': 'Image Saving complete.'}, status=status.HTTP_200_OK)
+            except:
+                return Response({'error': str(e),'message': 'Image uploading fail.'}, status=status.HTTP_400_BAD_REQUEST)
 
 def segment_image(input_image_data, output_dir='/root/StudyOnCurtainWall/backend/segged', sam_checkpoint="/root/StudyOnCurtainWall/backend/sam_vit_h_4b8939.pth", model_type="vit_h"):
     # Check if CUDA is available

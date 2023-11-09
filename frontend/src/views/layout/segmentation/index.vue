@@ -37,7 +37,7 @@ import { ref }from 'vue'
 import axios from 'axios'
 import router from "@/router/index.js"
 import Message from "@/utils/Message.js"
-import ImgUploader from '@/views/layout/segmentation/ImgUploader.vue'
+import ImgUploader from '@/components/ImgUploader.vue'
 import { UploadImg } from '@/api/segmentation.js'
 
 // const fileList = ref();
@@ -56,10 +56,11 @@ const GoToDash = () => {
 
 const upload = (val) =>{
     console.log(val.fileList[0].raw) //图片raw文件
-    
+
     let formData = new FormData();
     formData.append('image', val.fileList[0].raw);
-    console.log(formData)
+    formData.append('func', 'B');
+
     UploadImg(formData)
         .then(function (result) {  // result 是 api /user/login 的返回值，在后端 api 定义
             // 接收返回值，放在 person_info 变量中
