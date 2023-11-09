@@ -15,9 +15,8 @@ import torch
 import cv2
 import sys
 # 模块路径添加到 sys.path
-sys.path.append('/root/StudyOnCurtainWall/backend')
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
-
+#sys.path.append('/root/StudyOnCurtainWall/backend')
+from backend.segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 
 # Create your views here.
 class GetImg(GenericViewSet):
@@ -25,7 +24,7 @@ class GetImg(GenericViewSet):
 
     @action(methods=['get'], detail=False)
     def layer(self):
-        print(111)
+        print('get something')
 
 
     @action(methods=['post'], detail=False)
