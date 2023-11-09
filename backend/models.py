@@ -2,11 +2,8 @@ from django.db import models
 
 # Create your models here.
 class Image(models.Model):
-    uid = models.BigIntegerField(blank=True, null=True)
-    name = models.CharField(max_length=255,blank=True, null=True)
-    last_modified = models.DateTimeField(blank=True, null=True)
-    size = models.BigIntegerField(blank=True, null=True)
-    file_path = models.FileField(upload_to='uploads/')
+    func = models.CharField(blank=False,null=False,max_length=100,choices=[('A', 'segmentation'), ('B', 'explosion_identify')])
+    image = models.FileField(upload_to='uploads/')
 
     class Meta:
         app_label = 'backend'
