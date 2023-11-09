@@ -143,7 +143,7 @@ const onCancel = () =>{
     text-align: center;
   }
 
-  .el-upload,
+  .uploadClass,
   .el-upload-list--picture-card .el-upload-list__item {
     width: 15vw;
     height: 15vw;
