@@ -1,33 +1,21 @@
 <template>
-    <div>这是图像分割页面</div>
+    <div>这是振动数据风震图页面</div>
     <el-button @click="GoToDash">进入仪表盘</el-button>
-        <el-upload
-            ref="uploadRef"
-            class="upload-container"
-            v-model:file-list="fileList"
-            accept=".csv"
-            action="/api"
-            :auto-upload="false"
-            :limit="1"
-            :on-exceed="handleExceed"
-    >
-        <el-button type="primary">选择文件</el-button>
-        <el-button type="success" @click="submitUpload">
-            上传文件
-        </el-button>
-        <template #tip>
-        <div class="el-upload__tip">
-            请选择csv格式文件
-        </div>
-        </template>
-    </el-upload>
+
+    <div>
+        <input type="file" ref="fileInput"  accept=".csv" @change="handleFileInputChange" />
+        <button @click="uploadFile" :disabled="!selectedFile">上传文件</button>
+    </div>
 </template>
 
 <script setup>
     import router from "@/router/index.js"
+    import { UploadCsv } from '@/api/vibration.js'
     import { ref } from 'vue'
 
-    const uploadRef = ref(null);
+    
+    const fileInputRef = ref(null);
+    const selectedFile = ref(null); //已选文件
 
     const GoToDash = () => {
         //跳转仪表盘页面
@@ -39,16 +27,26 @@
         })
     }
 
-    const handleExceed = (files) => {
-        uploadRef.value.clearFiles()
-        const file = files[0]
-        file.uid = genFileId()
-        uploadRef.value.handleStart(file)
-    }
 
-    const submitUpload = () =>{
-        uploadRef.value.submit();
-    }
+    const handleFileInputChange = (event) => {
+        const file = event.target.files[0];
+        selectedFile.value = file;
+        console.log(selectedFile.value);
+    };
+    const uploadFile =  () => {
+        if (selectedFile.value) {
+            let formData = new FormData();
+            formData.append('csv', selectedFile.value);
+            UploadCsv(formData)
+            .then(function (result) {  
+                console.log(result)
+                // after_upload(result);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
+    };
 
 </script>
 
