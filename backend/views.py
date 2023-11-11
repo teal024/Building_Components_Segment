@@ -8,6 +8,7 @@ from rest_framework import status
 from backend.serializers import ImageSerializer
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
+from django.conf import settings
 
 import os
 import numpy as np
@@ -44,23 +45,48 @@ class GetImg(GenericViewSet):
 
                 # 调用图像分割函数进行处理
                 segment_image(image_data)
-                return Response({'message': 'Image processing complete.'}, status=status.HTTP_200_OK)
+
+                return Response({'message': 'Image processing complete.'},status=status.HTTP_200_OK,)
             except Exception as e:
                 print(e)
                 # 处理异常情况
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         elif request.POST.get('func')  == 'B':
             file_path = os.path.join(file_path,'explosion_identify')
+            if not os.path.exists(file_path):
+                os.makedirs(file_path)
             fs = FileSystemStorage(location=file_path)
+
             try:
                 uploaded_file = request.FILES['image']  # 获取上传的图像文件
                 filename = fs.save(uploaded_file.name, uploaded_file)
 
+
                  # 开始识别玻璃内爆的操作—————————————————————————
                  # 以下代码由邓丁熙小组填充修改———————————————————
 
-                return Response({'message': 'Image Saving complete.'}, status=status.HTTP_200_OK)
-            except:
+
+                #返回图片先写死为原图片
+                result_url = request.build_absolute_uri('/media/explosion_identify/' + filename)
+                return Response({'message': 'Image Saving complete.',
+                                 'total': 13,  #结果图片数量
+                                 'pictures': [   #结果图片url
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                     {'url': result_url},
+                                 ]}, status=status.HTTP_200_OK)
+            except Exception as e:
                 return Response({'error': str(e),'message': 'Image uploading fail.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class UploadCsv(GenericViewSet):

@@ -7,7 +7,7 @@
         <ImgUploader ref="ImgUploadRef" @uploadPicture ="upload"/>
     </div>
     <div class="result-container">
-        <ImgList/>
+        <ImgList :data="ImgResult"/>
     </div>
 
 </template>
@@ -55,7 +55,7 @@ const upload = (val) =>{
 
 
 const after_upload = (result) => {
-    ImgResult.value = result;//后期需要修改，先这么写
+    ImgResult.value = result.data;//后期需要修改，先这么写
 }
 </script>
 

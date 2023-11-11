@@ -18,12 +18,6 @@
             </el-dialog>
           </el-col>
         </el-row>
-        <!-- 分页栏 -->
-        <el-row class="pagination">
-          <el-pagination v-model:currentPage="currentPage" v-model:pageSize="pageSize" :small="small" :disabled="disabled"
-            :background="background" layout="prev, pager, next, jumper" :total="total"
-            @current-change="handleCurrentChange" />
-        </el-row>
       </el-main>
     </el-container>
   </template>
@@ -32,50 +26,26 @@
   import { computed } from 'vue'
   import { ref } from 'vue'
   import { ZoomIn, Download } from '@element-plus/icons-vue';
-
+  import { defineProps } from 'vue';
+ 
+    // 模板使用coupon
+    const props = defineProps({
+        data: {
+            type: Object,
+            required: true
+        }
+    });
   
   const isload = ref(false);
   const dialogVisible = ref(false) //缩略图是否可见
-  const showShadow = ref(false);//是否显示阴影块
   
-  
-//   const resultList = ref([]);
-
-  const resultList = ref([
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-    {url:'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-  ])
-  
-  // 分页栏用到的数据
-  const currentPage = ref(1) //当前页数，默认为第1页
-  const pageSize = 20 //每页的图片数量，设置为20
   const rowSize = 4
-  let total = ref(1);
-  
-  // 计算属性，计算resultList中图片对应的行；每行3列
+
   const imageRows = computed(() => {
-    const start = 0; //当前页的起始数据编号
-    const end = start + pageSize;//当前页的最后数据号
-    const paginatedShopRows = resultList.value.slice(start, end);
     const rows = []  //二维数组，rows[i]存储第i行的店铺卡牌（4个）
-    const rowCount = pageSize / rowSize; //行数
+    const rowCount = props.data.total / rowSize; //行数
     for (let i = 0; i < rowCount; i++) {
-      rows.push(paginatedShopRows.slice(i * rowSize, (i + 1) * rowSize))
+      rows.push(props.data.pictures.slice(i * rowSize, (i + 1) * rowSize))
     }
     return rows;
   })
@@ -85,7 +55,6 @@
   }
 
   
-
   </script>
   
   

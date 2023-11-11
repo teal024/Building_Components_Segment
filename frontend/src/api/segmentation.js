@@ -15,7 +15,7 @@ export function UploadImg(FormData) {  // 在 src/views/login/index.vue 里调�
         if (response.status === 200) {
             Message.success("操作成功");
             
-            // console.log(response.data); // 检查返回的数据
+            console.log(response.data); // 检查返回的数据
             return response;  //  // 正确响应，返回数据
         } else {
             Message.error("操作失败");
