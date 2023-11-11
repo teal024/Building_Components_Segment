@@ -63,6 +63,31 @@ class GetImg(GenericViewSet):
             except:
                 return Response({'error': str(e),'message': 'Image uploading fail.'}, status=status.HTTP_400_BAD_REQUEST)
 
+class UploadCsv(GenericViewSet):
+    serializer_class = ImageSerializer
+
+    @action(methods=['post'], detail=False)
+    def save_csv(self,request):
+        file_path = './backend/media/' # 指定保存文件的文件夹路径
+
+        file_path = os.path.join(file_path,'vibration')
+        # 若文件夹不存在则新建
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+
+        try:
+            uploaded_file = request.FILES['csv']  # 获取上传的图像文件
+
+            # 创建文件系统存储对象
+            fs = FileSystemStorage(location=file_path)
+            fs.save(uploaded_file.name, uploaded_file)
+
+            return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            # 处理异常情况
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 def segment_image(input_image_data, output_dir='/root/StudyOnCurtainWall/backend/segged', sam_checkpoint="/root/StudyOnCurtainWall/backend/sam_vit_h_4b8939.pth", model_type="vit_h"):
     # Check if CUDA is available
     if torch.cuda.is_available():
