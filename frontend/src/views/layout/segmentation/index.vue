@@ -4,9 +4,9 @@
     <div>这是图像分割页面</div>
     <el-button @click="GoToDash">进入仪表盘</el-button>
     <div>
-        <ImgUploader ref="ImgUploadRef" @uploadPicture ="upload"/>
+        <ImgUploader ref="ImgUploadRef" @uploadPicture ="upload" @onCancel="cancel"/>
     </div>
-    <div class="result-container">
+    <div class="result-container" v-if="isLoad">
         <ImgList :data="ImgResult"/>
     </div>
 
@@ -24,6 +24,7 @@ import { UploadImg } from '@/api/segmentation.js'
 // const fileList = ref();
 const ImgUploadRef = ref(null); //上传的图片
 const ImgResult = ref(null); //分割后获得的图片
+const isLoad = ref(false)
 
 const GoToDash = () => {
     //跳转仪表盘页面
@@ -56,6 +57,10 @@ const upload = (val) =>{
 
 const after_upload = (result) => {
     ImgResult.value = result.data;//后期需要修改，先这么写
+    isLoad.value = true;
+}
+const cancel = () => {
+    isLoad.value = false;
 }
 </script>
 
