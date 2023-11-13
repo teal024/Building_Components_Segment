@@ -6,7 +6,7 @@
     <div>
         <ImgUploader ref="ImgUploadRef" @uploadPicture ="upload" @onCancel="cancel"/>
     </div>
-    <div class="result-container" v-if="isLoad">
+    <div class="result-container" v-if="ImgResult">
         <ImgList :data="ImgResult"/>
     </div>
 
@@ -24,7 +24,6 @@ import { UploadImg } from '@/api/segmentation.js'
 // const fileList = ref();
 const ImgUploadRef = ref(null); //上传的图片
 const ImgResult = ref(null); //分割后获得的图片
-const isLoad = ref(false)
 
 const GoToDash = () => {
     //跳转仪表盘页面
@@ -41,26 +40,24 @@ const upload = (val) =>{
 
     let formData = new FormData();
     formData.append('image', val.fileList[0].raw);
-    formData.append('func', 'B');
+    formData.append('func', 'A');
 
     UploadImg(formData)
         .then(function (result) {  // result 是 api /user/login 的返回值，在后端 api 定义
             // 接收返回值，放在 person_info 变量中
-            console.log(result)
-            after_upload(result);
+            if(result.status == 200)
+                after_upload(result);
         })
         .catch(function (error) {
             console.log(error);
         });
 }
 
-
 const after_upload = (result) => {
     ImgResult.value = result.data;//后期需要修改，先这么写
-    isLoad.value = true;
 }
 const cancel = () => {
-    isLoad.value = false;
+    ImgResult.value = [];
 }
 </script>
 
