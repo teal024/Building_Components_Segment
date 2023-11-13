@@ -1,6 +1,6 @@
 <template>
     <el-container class="result-container">
-
+      
       <el-main class="result-gallery" v-loading="isload">
         <!-- 行 -->
         <el-row v-for="(row, index) in imageRows" :key="index" class="resultrow" :gutter="20">

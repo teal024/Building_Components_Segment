@@ -36,7 +36,8 @@ const showManagement = ref(true)
 const handleSelectMenu = (choice) => {
     router.push({ name: 'layout', params:{ choice:choice } })
 }
-const defaultActive = 'dashboard'
+const defaultActive = ref('dashboard')
+
 </script>
 
 <style scoped>

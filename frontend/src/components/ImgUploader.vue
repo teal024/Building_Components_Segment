@@ -118,7 +118,6 @@ const onCancel = () =>{
   fileList.splice(0, 1);//删除fileList的第一个元素
   uploadRef.value.clearFiles();//调用el-upload的clearFiles()函数清空已经选择的文件列表
   emit('onCancel');
-
 };
 
 </script>
