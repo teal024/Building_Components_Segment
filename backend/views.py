@@ -1,4 +1,5 @@
 from argparse import _ActionsContainer
+import io
 from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework.viewsets import GenericViewSet
@@ -44,9 +45,23 @@ class GetImg(GenericViewSet):
                 image_data = cv2.imdecode(np.fromstring(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
 
                 # 调用图像分割函数进行处理
-                segment_image(image_data)
+                #segment_image(image_data)
 
-                return Response({'message': 'Image processing complete.'},status=status.HTTP_200_OK,)
+                image_list = []  # 用于存储图片路径的列表
+                valid_extensions = ['.png', '.jpg', '.jpeg', '.gif']  # 允许的图片文件扩展名列表
+    
+                # 遍历文件夹中的所有文件和子文件夹
+                for root, dirs, files in os.walk('./backend/media/segged'):
+                    for file in files:
+                        file_extension = os.path.splitext(file)[1].lower()  # 获取文件扩展名并转换为小写
+                        if file_extension in valid_extensions:
+                            image_path = request.build_absolute_uri('/media/segged/' + file)
+                            image_list.append(image_path)
+     
+                return Response({'message': 'Image processing complete.',
+                                 'total': len(image_list),  #结果图片数量
+                                 'pictures':image_list},
+                                 status=status.HTTP_200_OK)
             except Exception as e:
                 print(e)
                 # 处理异常情况
@@ -114,7 +129,7 @@ class UploadCsv(GenericViewSet):
             # 处理异常情况
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-def segment_image(input_image_data, output_dir='/root/StudyOnCurtainWall/backend/segged', sam_checkpoint="/root/StudyOnCurtainWall/backend/sam_vit_h_4b8939.pth", model_type="vit_h"):
+def segment_image(input_image_data, output_dir='/root/StudyOnCurtainWall/backend/media/segged', sam_checkpoint="backend\sam_vit_h_4b8939.pth", model_type="vit_h"):
     # Check if CUDA is available
     if torch.cuda.is_available():
         device = "cuda"

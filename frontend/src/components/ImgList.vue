@@ -26,7 +26,6 @@
   import { computed } from 'vue'
   import { ref } from 'vue'
   import { ZoomIn, Download } from '@element-plus/icons-vue';
-  import { defineProps } from 'vue';
  
     // 模板使用coupon
     const props = defineProps({
@@ -53,8 +52,6 @@
   const savePicture = (url) =>{
     console.log(url);
   }
-
-  
   </script>
   
   
