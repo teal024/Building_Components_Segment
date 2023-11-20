@@ -5,7 +5,7 @@ const baseURL = 'http://127.0.0.1:8000';
 
 const request = axios.create({  // 创建axios实例
     baseURL: baseURL,
-    timeout: 5000
+    timeout: 50000
 })
 
 export default request;

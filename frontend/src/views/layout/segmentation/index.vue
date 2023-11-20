@@ -24,6 +24,7 @@ import { UploadImg } from '@/api/segmentation.js'
 // const fileList = ref();
 const ImgUploadRef = ref(null); //上传的图片
 const ImgResult = ref(null); //分割后获得的图片
+// 这里是一个响应式变量
 
 const GoToDash = () => {
     //跳转仪表盘页面
