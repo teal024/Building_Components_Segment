@@ -16,36 +16,26 @@ import numpy as np
 import torch
 import cv2
 import sys
-# 模块路径添加到 sys.path
-#sys.path.append('/root/StudyOnCurtainWall/backend')
+
 from backend.segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 
-# Create your views here.
 class GetImg(GenericViewSet):
-    serializer_class = ImageSerializer
-
     @action(methods=['post'], detail=False)
     def save_image(self, request):
         file_path = './backend/media/' # 指定保存文件的文件夹路径
         # 若文件夹不存在则新建
         if not os.path.exists(file_path):
             os.makedirs(file_path)
-
         if request.POST.get('func')  == 'A':
-
             file_path = os.path.join(file_path,'segmentaion')
             try:
                 uploaded_file = request.FILES['image']  # 获取上传的图像文件
                 FileSystemStorage(location=file_path)
-
-                # 开始图像分割的操作————————————————————————————
-                # 以下代码由严文昊小组填充修改———————————————————
-
                 # 读取上传的图像文件并转换为numpy数组
                 image_data = cv2.imdecode(np.fromstring(uploaded_file.read(), np.uint8), cv2.IMREAD_COLOR)
 
                 # 调用图像分割函数进行处理
-                #segment_image(image_data)
+                segment_image(image_data)
 
                 image_list = []  # 用于存储图片路径的列表
                 valid_extensions = ['.png', '.jpg', '.jpeg', '.gif']  # 允许的图片文件扩展名列表
@@ -67,46 +57,7 @@ class GetImg(GenericViewSet):
                 # 处理异常情况
                 return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        elif request.POST.get('func')  == 'B':
-            file_path = os.path.join(file_path,'explosion_identify')
-            if not os.path.exists(file_path):
-                os.makedirs(file_path)
-            fs = FileSystemStorage(location=file_path)
-
-            try:
-                uploaded_file = request.FILES['image']  # 获取上传的图像文件
-                filename = fs.save(uploaded_file.name, uploaded_file)
-
-
-                 # 开始识别玻璃内爆的操作—————————————————————————
-                 # 以下代码由邓丁熙小组填充修改———————————————————
-
-
-                #返回图片先写死为原图片
-                result_url = request.build_absolute_uri('/media/explosion_identify/' + filename)
-                return Response({'message': 'Image Saving complete.',
-                                 'total': 13,  #结果图片数量
-                                 'pictures': [   #结果图片url
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                     {'url': result_url},
-                                 ]}, status=status.HTTP_200_OK)
-            except Exception as e:
-                return Response({'error': str(e),'message': 'Image uploading fail.'}, status=status.HTTP_400_BAD_REQUEST)
-
 class UploadCsv(GenericViewSet):
-    serializer_class = ImageSerializer
-
     @action(methods=['post'], detail=False)
     def save_csv(self,request):
         file_path = './backend/media/' # 指定保存文件的文件夹路径
@@ -129,7 +80,12 @@ class UploadCsv(GenericViewSet):
             # 处理异常情况
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-def segment_image(input_image_data, output_dir='/root/StudyOnCurtainWall/backend/media/segged', sam_checkpoint="backend\sam_vit_h_4b8939.pth", model_type="vit_h"):
+def segment_image(input_image_data, output_dir='backend/media/segged', sam_checkpoint="backend/sam_vit_h_4b8939.pth", model_type="vit_h"):
+    # 清空output_dir里的内容
+    for filename in os.listdir(output_dir):
+        file_path = os.path.join(output_dir, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
     # Check if CUDA is available
     if torch.cuda.is_available():
         device = "cuda"
@@ -163,7 +119,8 @@ def segment_image(input_image_data, output_dir='/root/StudyOnCurtainWall/backend
 
         for index, ann in enumerate(sorted_anns):
             m = ann['segmentation']
-            if ann['area'] > size / 24 and ann['area'] < size / 2:
+            if ann['area'] > size / 36:
+                print(ann['area'])
                 img_tosave = np.where(m[..., None] == 1, original_image, 255)
                 img_tosave = cv2.cvtColor(img_tosave, cv2.COLOR_BGR2RGB)
                 output_filename = f"{index}_saved.png"
