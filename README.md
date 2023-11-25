@@ -1,5 +1,6 @@
 # StudyOnCurtainWall
 This is a project on CurtainWall Study cooperated with CE&SE.
+土木合作项目-图像分割后端
 
 ### Backend : Python + Django
 
