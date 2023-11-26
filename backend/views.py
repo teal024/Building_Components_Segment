@@ -14,6 +14,7 @@ import os
 import numpy as np
 import cv2
 from backend.tools import segment_image
+import re
 
 
 class GetImg(GenericViewSet):
@@ -35,8 +36,9 @@ class GetImg(GenericViewSet):
                 segment_image(image_data)
 
                 image_list = []  # 用于存储图片路径的列表
+                label_list = []
                 valid_extensions = ['.png', '.jpg', '.jpeg', '.gif']  # 允许的图片文件扩展名列表
-    
+
                 # 遍历文件夹中的所有文件和子文件夹
                 for root, dirs, files in os.walk('./backend/media/segged'):
                     for file in files:
@@ -44,11 +46,21 @@ class GetImg(GenericViewSet):
                         if file_extension in valid_extensions:
                             image_path = request.build_absolute_uri('/media/segged/' + file)
                             image_list.append(image_path)
-     
+                            filename, _ = os.path.splitext(file)
+                            # 使用正则表达式提取标签
+                            match = re.search(r'[^_]+$', filename)  # 匹配最后一个下划线之后的部分
+                            if match:
+                                label = match.group()
+                                label_list.append(label)
+                            else:
+                                label_list.append(None)  # 如果没有匹配到标签，可以添加一个默认值或者处理方式
+
                 return Response({'message': 'Image processing complete.',
                                  'total': len(image_list),  #结果图片数量
-                                 'pictures':image_list},
-                                 status=status.HTTP_200_OK)
+                                 'pictures': image_list,
+                                 'labels': label_list,
+                                 },
+                                 status = status.HTTP_200_OK)
             except Exception as e:
                 print(e)
                 # 处理异常情况

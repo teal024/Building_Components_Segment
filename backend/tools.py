@@ -15,7 +15,7 @@ else:
 model = torch.load("backend/best_model.pth")
 model.eval()
 model.to(device)
-classes = ('glass', 'metal', 'other')
+classes = ('金属', '玻璃', '其它')
 
 
 def segment_image(input_image_data, output_dir='backend/media/segged', sam_checkpoint="backend/sam_vit_h_4b8939.pth",
