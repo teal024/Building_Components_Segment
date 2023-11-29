@@ -13,7 +13,7 @@ from django.conf import settings
 import os
 import numpy as np
 import cv2
-from backend.tools import segment_image
+from backend.my_tools import segment_image
 import re
 
 
